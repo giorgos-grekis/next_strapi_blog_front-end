@@ -2,10 +2,16 @@
 // import Image from "next/image";
 import Layout from "@components/Layout";
 import EventItem from "@components/EventItem";
-import { API_URL } from "@config/index";
-const qs = require('qs');
 
-export default function EventPage({ events }) {
+import { API_URL, PER_PAGE } from "@config/index";
+import Pagination from "@components/Pagination";
+const qs = require("qs");
+
+
+
+export default function EventPage({ events, pageCount }) {
+  const totalPage = events?.meta?.pagination?.total;
+
 
 
   return (
@@ -14,36 +20,43 @@ export default function EventPage({ events }) {
       {events?.data?.length === 0 && <h3>No events to Show</h3>}
 
       {events?.data?.map((evt) => (
-        <EventItem key={evt.id} evt={evt}/>
+        <EventItem key={evt.id} evt={evt} />
       ))}
+
+      <Pagination pageCount={pageCount} totalPage={totalPage} />
     </Layout>
   );
 }
 
-export async function getStaticProps() {
-  // const res = await fetch(`${API_URL}/api/events`);
-  // const events = await res.json();
+export async function getServerSideProps({ query: { page = 1 } }) {
+  // convert page to naumber
+  let pageCount = Number(page);
 
-  const query = qs.stringify({
-    sort: ['date:asc'],
+  // Calculate start page
+  const start = pageCount === 1 ? 0 : (pageCount - 1) * PER_PAGE;
 
-    pagination: {
-      // pageSize: 5,
-      // page: 1,
-      // start: 0,
-      // limit: 2,
+  const query = qs.stringify(
+    {
+      sort: ["date:asc"],
+
+      pagination: {
+        // pageSize: 5,
+        // page: 1,
+        start: start,
+        limit: PER_PAGE,
+      },
+      populate: "*",
     },
-    populate: '*', 
-  }, {
-    encodeValuesOnly: true,
-  });
+    {
+      encodeValuesOnly: true,
+    }
+  );
 
   const res = await fetch(`${API_URL}/api/eventsses?${query}`);
 
   const events = await res.json();
 
   return {
-    props: { events },
-    revalidate: 30,
+    props: { events, pageCount },
   };
 }

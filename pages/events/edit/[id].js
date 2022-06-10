@@ -9,6 +9,7 @@ import Modal from "@components/Modal";
 import { formatDateForState } from "@utils/formatDate";
 import { FaImage } from "react-icons/fa";
 import styles from "@styles/Form.module.css";
+import ImageUpload from "@components/ImageUpload";
 
 const EditEventPage = ({ evt }) => {
   const event = evt.data.attributes;
@@ -34,7 +35,6 @@ const EditEventPage = ({ evt }) => {
 
   const [showModal, setShowModal] = useState(false);
 
-  console.log('showModal: ', showModal)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,6 +80,19 @@ const EditEventPage = ({ evt }) => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
   };
+
+  const imageUploaded = async (e) => {
+    console.log('uploaded')
+    const res = await fetch(`${API_URL}/api/eventsses/${id}?populate=*`)
+    const data = await  res.json();
+
+    console.log('data from imageUploaded:', data?.attributes?.image?.data?.attributes?.formats?.thumbnail?.url)
+
+    // setImagePreview(image.thumbnail)
+
+    setShowModal(false);
+
+  }
 
   return (
     <Layout title="Add New Event">
@@ -200,7 +213,7 @@ const EditEventPage = ({ evt }) => {
       </div>
 
         <Modal show={showModal} onClose={() => setShowModal(false)}>
-            Image UPLOAD
+          <ImageUpload evtId={id} imageUploaded={imageUploaded}/>
         </Modal>
 
     </Layout>

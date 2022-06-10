@@ -6,7 +6,7 @@ import styles from "@styles/Modal.module.css";
 const Modal = ({ show, onClose, children, title }) => {
   const [isBrowser, setIsBrowser] = useState(false);
 
-  console.log('show modal: ', show)
+
 
   useEffect(() => setIsBrowser(true), [isBrowser])
 
@@ -17,7 +17,7 @@ const Modal = ({ show, onClose, children, title }) => {
 
   const modalContent = show ? (
     <div className={styles.overlay} onClick={handleClose}>
-      <div className={styles.modal}>
+      <div className={styles.modal} onClick={(e)=> e.stopPropagation()}>
         <div className={styles.header}>
           <a href="#" onClick={handleClose}>
             <FaTimes />
