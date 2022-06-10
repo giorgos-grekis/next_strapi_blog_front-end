@@ -4,23 +4,25 @@ import Layout from "@components/Layout";
 import { FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
 import styles from "@styles/AuthForm.module.css";
+import useAuth from "@hooks/useAuth";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  
+
+  const { register, error } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ email, password });
+    register({ email, password });
 
-    if(password !== passwordConfirm){
-        toast.error('Passwods do not match');
-        return
+    if (password !== passwordConfirm) {
+      toast.error("Passwods do not match");
+      return;
     }
-    console.log(username, email, password);
+    // console.log(username, email, password);
   };
 
   return (
