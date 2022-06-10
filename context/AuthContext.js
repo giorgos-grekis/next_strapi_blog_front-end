@@ -52,7 +52,16 @@ export const AuthProvider = ({ children }) => {
 
   // Logout user
   const logout = async () => {
-    console.log("Logout");
+    console.log('mphke sto logout')
+    const res = await fetch(`${NEXT_URL}/api/logout`, {
+      method: "GET",
+    });
+
+    if(res.ok){
+      setUser(null);
+      router.push('/');
+    }
+
   };
 
   // Check if user is logged in
