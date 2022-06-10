@@ -223,7 +223,7 @@ const EditEventPage = ({ evt }) => {
 export async function getServerSideProps({ params: { id }, req }) {
   const res = await fetch(`${API_URL}/api/eventsses/${id}?populate=*`);
 
-  console.log(req.headers.cookie)
+  // console.log(req.headers.cookie)
 
   const evt = await res.json();
 

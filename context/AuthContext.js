@@ -8,13 +8,16 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
 
-  console.log('user: ', user);
-  console.log('error: ', error);
+  useEffect(() => {
+    chechUserLoggedIn();
+  }, []);
 
   // Register user
   const register = async (user) => {
     console.log(user);
   };
+
+  console.log('user: ', user)
 
   // Login user
   const login = async ({ email: identifier, password }) => {
@@ -30,21 +33,18 @@ export const AuthProvider = ({ children }) => {
       }),
     });
 
-    const data = await res.json()
+    const data = await res.json();
 
-    console.log('data: ', data?.message)
-
-    if(res.ok){
-      setUser(data?.user)
-    } else{
-      console.log('mpkhe sto else')
-      setError(data?.message)
+    
+    if (res.ok) {
+      setUser(data?.user);
+    } else {
+      setError(data?.message);
       // setError(null)
       // setTimeout(()=>{
       //   setError(null)
       // }, [5000])
     }
-
   };
 
   // Logout user
@@ -54,7 +54,17 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is logged in
   const chechUserLoggedIn = async () => {
-    console.log("Check");
+    const res = await fetch(`${NEXT_URL}/api/user`);
+
+    const data = await res.json();
+
+  
+
+    if (res.ok) {
+      setUser(data?.user);
+    } else {
+      setUser(null);
+    }
   };
 
   return (
