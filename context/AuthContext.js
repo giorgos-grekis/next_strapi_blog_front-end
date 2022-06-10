@@ -14,12 +14,32 @@ export const AuthProvider = ({ children }) => {
     chechUserLoggedIn();
   }, []);
 
+  console.log("user: ", user);
+
   // Register user
   const register = async (user) => {
-    console.log(user);
-  };
+    console.log('user: ', user);
+    const res = await fetch(`${NEXT_URL}/api/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
 
-  console.log('user: ', user)
+    const data = await res.json();
+
+    if (res.ok) {
+      setUser(data?.user);
+      router.push("/account/dashboard");
+    } else {
+      setError(data?.message);
+      // setError(null)
+      // setTimeout(()=>{
+      //   setError(null)
+      // }, [5000])
+    }
+  };
 
   // Login user
   const login = async ({ email: identifier, password }) => {
@@ -37,10 +57,9 @@ export const AuthProvider = ({ children }) => {
 
     const data = await res.json();
 
-    
     if (res.ok) {
       setUser(data?.user);
-      router.push('/account/dashboard')
+      router.push("/account/dashboard");
     } else {
       setError(data?.message);
       // setError(null)
@@ -52,16 +71,15 @@ export const AuthProvider = ({ children }) => {
 
   // Logout user
   const logout = async () => {
-    console.log('mphke sto logout')
+    console.log("mphke sto logout");
     const res = await fetch(`${NEXT_URL}/api/logout`, {
       method: "GET",
     });
 
-    if(res.ok){
+    if (res.ok) {
       setUser(null);
-      router.push('/');
+      router.push("/");
     }
-
   };
 
   // Check if user is logged in
@@ -69,8 +87,6 @@ export const AuthProvider = ({ children }) => {
     const res = await fetch(`${NEXT_URL}/api/user`);
 
     const data = await res.json();
-
-  
 
     if (res.ok) {
       setUser(data?.user);
